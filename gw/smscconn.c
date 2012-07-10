@@ -507,6 +507,9 @@ int smscconn_send(SMSCConn *conn, Msg *msg)
         return -1;
     }
 
+//    error(0,"MESSAGE: %s",msg->sms.msgdata);
+//    msg->sms.split_parts = 1;
+
     /* if this a retry of splitted message, don't unify prefix and don't try to split */
     if (msg->sms.split_parts == NULL) {    
         /* normalize the destination number for this smsc */
@@ -516,13 +519,17 @@ int smscconn_send(SMSCConn *conn, Msg *msg)
         /* split msg */
         parts = sms_split(msg, NULL, NULL, NULL, NULL, 1, 
             counter_increase(split_msg_counter) & 0xff, 0xff, conn->max_sms_octets);
-        if (gwlist_len(parts) == 1) {
+
+        if (gwlist_len(parts) == 1 || conn->message_payload == 1) {
             /* don't create split_parts of sms fit into one */
+        	/* Или если отправлять через message_payload поле */
+
             gwlist_destroy(parts, msg_destroy_item);
             parts = NULL;
         }
+
     }
-    
+
     if (parts == NULL)
         ret = conn->send_msg(conn, msg);
     else {

@@ -149,7 +149,8 @@ typedef struct {
     int dest_addr_npi;
     long bind_addr_ton;
     long bind_addr_npi;
-    int transmit_port; 
+    int transmit_port;
+    int message_payload;
     int receive_port; 
     int quitting; 
     long enquire_link_interval;
@@ -928,6 +929,12 @@ static SMPP_PDU *msg_to_pdu(SMPP *smpp, Msg *msg)
     /* set more messages to send */
     if (smpp->version > 0x33 && msg->sms.msg_left > 0)
         pdu->u.submit_sm.more_messages_to_send = 1;
+
+    if (smpp->message_payload == 1){ // Если нужно отправлять сообщение через поле payload
+		pdu->u.submit_sm.sm_length = 0;
+		pdu->u.submit_sm.message_payload = pdu->u.submit_sm.short_message;
+		pdu->u.submit_sm.short_message = octstr_format("");
+    }
 
     return pdu;
 }
@@ -2001,6 +2008,9 @@ int smsc_smpp_create(SMSCConn *conn, CfgGroup *grp)
     SMPP *smpp;
     int ok;
     int transceiver_mode;
+
+    // Отправлять ли сообщение через поле payload
+    int message_payload;
     Octstr *smsc_id;
     long enquire_link_interval;
     long max_pending_submits;
@@ -2016,13 +2026,18 @@ int smsc_smpp_create(SMSCConn *conn, CfgGroup *grp)
     my_number = alt_addr_charset = alt_charset = NULL;
     transceiver_mode = 0;
     autodetect_addr = 1;
+
+    // По-умолчанию сообщения отправляются нормальным способом
+    message_payload = 0;
  
     host = cfg_get(grp, octstr_imm("host")); 
     if (cfg_get_integer(&port, grp, octstr_imm("port")) == -1) 
         port = 0; 
     if (cfg_get_integer(&receive_port, grp, octstr_imm("receive-port")) == -1) 
         receive_port = 0; 
-    cfg_get_bool(&transceiver_mode, grp, octstr_imm("transceiver-mode")); 
+    cfg_get_bool(&transceiver_mode, grp, octstr_imm("transceiver-mode"));
+    // Получаем из конфига
+    cfg_get_bool(&message_payload, grp, octstr_imm("message-payload"));
     username = cfg_get(grp, octstr_imm("smsc-username")); 
     password = cfg_get(grp, octstr_imm("smsc-password")); 
     system_type = cfg_get(grp, octstr_imm("system-type")); 
@@ -2155,6 +2170,7 @@ int smsc_smpp_create(SMSCConn *conn, CfgGroup *grp)
     cfg_get_integer(&smpp->bind_addr_ton, grp, octstr_imm("bind-addr-ton"));
     cfg_get_integer(&smpp->bind_addr_npi, grp, octstr_imm("bind-addr-npi"));
 
+    conn->message_payload = message_payload;
     conn->data = smpp; 
     conn->name = octstr_format("SMPP:%S:%d/%d:%S:%S",  
     	    	    	       host, port, 
@@ -2178,7 +2194,10 @@ int smsc_smpp_create(SMSCConn *conn, CfgGroup *grp)
     octstr_destroy(service_type);
 
     conn->status = SMSCCONN_CONNECTING; 
-       
+
+    // Устанавливаем значение у SMPP
+    smpp->message_payload = message_payload;
+
     /* 
      * I/O threads are only started if the corresponding ports 
      * have been configured with positive numbers. Use 0 to  

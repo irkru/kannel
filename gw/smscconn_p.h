@@ -193,6 +193,7 @@ struct smscconn {
     long reconnect_delay; /* delay in seconds while re-connect attempts */
 
     int alt_dcs; /* use alternate DCS 0xFX */
+    int message_payload; /* Отправляются ли сообщения через message_payloaad в рамках connection`а */
 
     double throughput;     /* message thoughput per sec. to be delivered to SMSC */
 
