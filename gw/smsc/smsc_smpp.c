@@ -1438,6 +1438,11 @@ static void handle_pdu(SMPP *smpp, Connection *conn, SMPP_PDU *pdu,
                     break;
                 }
 
+                msg->sms.segnum = pdu->u.deliver_sm.sar_segment_seqnum;
+                msg->sms.total_segments = pdu->u.deliver_sm.sar_total_segments;
+                msg->sms.reference_number = pdu->u.deliver_sm.sar_msg_ref_num;
+
+
                 /* Replace MO destination number with my-number */
                 if (octstr_len(smpp->my_number)) {
                     octstr_destroy(msg->sms.receiver);

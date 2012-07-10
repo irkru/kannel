@@ -108,8 +108,11 @@ MSG(sms,
 		INTEGER(msg_left);
 		VOID(split_parts);
 		INTEGER(priority);
-                INTEGER(resend_try);
-                INTEGER(resend_time);
+        INTEGER(resend_try);
+        INTEGER(resend_time);
+        INTEGER(total_segments);
+        INTEGER(segnum);
+        INTEGER(reference_number);
 	})
 
 MSG(ack,

@@ -1320,6 +1320,14 @@ static int obey_request(Octstr **result, URLTranslation *trans, Msg *msg)
 	    }
         }
 
+        http_header_add(request_headers, "X-SAR-TOTAL-SEGMENTS",
+         	                         octstr_get_cstr(octstr_format("%d",msg->sms.total_segments)));
+        http_header_add(request_headers, "X-SAR-segnum",
+                                     octstr_get_cstr(octstr_format("%d",msg->sms.segnum)));
+        http_header_add(request_headers, "X-SAR-REFERENCE-NUMBER",
+         							 octstr_get_cstr(octstr_format("%d",msg->sms.reference_number)));
+
+
 	id = remember_receiver(msg, trans, HTTP_METHOD_GET, pattern, request_headers, NULL, 0);
         semaphore_down(max_pending_requests);
 	http_start_request(caller, HTTP_METHOD_GET, pattern, request_headers,
