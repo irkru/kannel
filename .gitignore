@@ -1,0 +1,107 @@
+*.py[co]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+# Translations
+*.mo
+
+# Documentation
+docs/build
+
+# Virtual environments
+.env
+.virtualenv
+
+# IDEs
+.idea
+
+# Legacy
+.hgignore
+.hg
+
+# C
+.depend
+checks/check_counter
+checks/check_date
+checks/check_ipcheck
+checks/check_list
+checks/check_octstr
+gw-config
+gw/bearerbox
+gw/smsbox
+gw/wapbox
+libgw.a
+libgwlib.a
+libwap.a
+libwmlscript.a
+test/decode_emimsg
+test/decompile
+test/drive_smpp
+test/drive_wapbox
+test/fakesmsc
+test/fakewap
+test/test_boxc
+test/test_cfg
+test/test_charset
+test/test_cimd2
+test/test_conn
+test/test_dbpool
+test/test_dict
+test/test_headers
+test/test_hmac
+test/test_http
+test/test_http_server
+test/test_list
+test/test_md5
+test/test_mem
+test/test_mime
+test/test_mime_multipart
+test/test_msg
+test/test_octstr_dump
+test/test_octstr_format
+test/test_octstr_immutables
+test/test_ota
+test/test_pap
+test/test_pcre
+test/test_pdu
+test/test_ppg
+test/test_prioqueue
+test/test_radius_acct
+test/test_radius_pdu
+test/test_regex
+test/test_si
+test/test_sl
+test/test_smsc
+test/test_store_dump
+test/test_udp
+test/test_urltrans
+test/test_uuid
+test/test_wakeup
+test/test_xmlrpc
+test/timestamp
+test/udpfeed
+test/wapproxy
+test/wml_tester
+utils/mtbatch
+utils/run_kannel_box
+utils/seewbmp
+wmlscript/wmlsc
+wmlscript/wmlsdasm
